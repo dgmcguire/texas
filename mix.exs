@@ -29,4 +29,12 @@ defmodule Texas.Mixfile do
   defp deps do
     []
   end
+
+  defp package do
+    [
+      name: :texas,
+      files: ~W(lib mix.exs README.md),
+      maintainers: ["Dan McGuire"]
+    ]
+  end
 end
