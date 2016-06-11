@@ -7,6 +7,8 @@ defmodule Texas.Mixfile do
      elixir: "~> 1.2",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
+     description: description,
+     package: package,
      deps: deps]
   end
 
@@ -27,14 +29,22 @@ defmodule Texas.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    []
+    [{:ratchet, "~>0.3.1"}]
+  end
+
+  defp description do
+    """
+    This is the core library for texas.  A backend driven, realtime, view layer for webdev.
+    """
   end
 
   defp package do
     [
       name: :texas,
       files: ~W(lib mix.exs README.md),
-      maintainers: ["Dan McGuire"]
+      maintainers: ["Dan McGuire"],
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/dgmcguire/texas"},
     ]
   end
 end
