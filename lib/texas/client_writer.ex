@@ -9,8 +9,8 @@ defmodule Texas.ClientAction do
   defp client_send_back(prop) do
     quote do
       path = "#{File.cwd!}/web/static/texas/"
-      File.mkdir_p!(path)
-      {:ok, file} = File.open(path <> "#{unquote(prop)}.js", [:write])
+      File.mkdir_p!(unquote(path))
+      {:ok, file} = File.open(unquote(path) <> "#{unquote(prop)}.js", [:write])
       content =
         """
         $("data-prop='#{unquote(prop)}'").on("submit", function( event ) {
@@ -25,9 +25,9 @@ defmodule Texas.ClientAction do
 
   defp channel_sub(prop) do
     path = "#{File.cwd!}/web/static/texas/"
-    File.mkdir_p!(path)
+    File.mkdir_p!(unquote(path))
     quote do
-      {:ok, file} = File.open(path <> "#{unquote(prop)}.js", [:write])
+      {:ok, file} = File.open(unquote(path) <> "#{unquote(prop)}.js", [:write])
       content =
         """
         var #{unquote(prop)}Html = document.querySelectorAll("[data-prop='#{unquote(prop)}']");
