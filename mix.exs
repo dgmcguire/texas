@@ -3,7 +3,7 @@ defmodule Texas.Mixfile do
 
   def project do
     [app: :texas,
-     version: "0.0.2",
+     version: "0.1.2",
      elixir: "~> 1.2",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
@@ -29,7 +29,7 @@ defmodule Texas.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:ratchet, "~>0.3.1"}]
+    [{:ratchet, "~>0.3.3"}]
   end
 
   defp description do

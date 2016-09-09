@@ -3,7 +3,7 @@ defmodule Texas.BoilerplateWriter do
     props = List.wrap(props)
     master_file(scope, props) |> Code.eval_quoted
     socket_joins(scope, props) |> Code.eval_quoted
-    imports_and_crap(scope, props) |> Code.eval_quoted
+    import_dependencies_and_shit(scope, props) |> Code.eval_quoted
   end
 
   defp master_file(scope, props) do
@@ -19,7 +19,7 @@ defmodule Texas.BoilerplateWriter do
     File.close file
   end
 
-  defp imports_and_crap(scope, props) do
+  defp import_dependencies_and_shit(scope, props) do
     for prop <- props do
       unless File.exists?("#{File.cwd!}/web/static/js/texas/#{prop}.js") do
         file_path = "#{File.cwd!}/web/static/js/texas/#{prop}.js"
@@ -36,7 +36,7 @@ defmodule Texas.BoilerplateWriter do
           import VText from 'virtual-dom/vnode/vtext'
           import htmlToVdom from 'html-to-vdom'
 
-          #{binding_set(prop)}
+          #{init_bindings(prop)}
           #{vdom_stuff(scope, prop, props)}
           """
         IO.binwrite file, content
@@ -72,7 +72,7 @@ defmodule Texas.BoilerplateWriter do
     content |> Enum.join |> String.trim_trailing
   end
 
-  defp binding_set(prop) do
+  defp init_bindings(prop) do
     content = """
       $("[data-prop='#{prop}']").submit(function( event ) {
         event.preventDefault();
