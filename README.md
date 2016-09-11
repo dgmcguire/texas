@@ -18,13 +18,13 @@ You'll need two libraries, texas from the hex repos and texasjs from npm's repos
 
     then you can pull it down with `mix deps.get` or simply starting your phoenix server.
 
-  2. Install texasjs with `npm install texasjs --save`.  This will bring in the virtual-dom related dependencies.  It doesn't actually do anything other than that.
+  2. Install texasjs with `npm install texasjs --save`.  This will bring in the virtual-dom related dependencies and save you the trouble of grabbing them one by one.  It doesn't actually do anything other than that.
 
-  3. Texas is tightly coupled with phoenix_ratchet (at least for now), so lets configure our view layer to use it as our templating engine.  In `config/config.ex`:
+  3. Texas is tightly coupled with phoenix_ratchet (at least for now), so lets configure our view layer to use it as our templating engine.  In `config/config.ex` throw this in there somewhere taking note that the last import declaration needs to stay at the bottom:
 
     ```
     config :phoenix, :template_engines,
-     ratchet: Ratchet.Phoenix.Engine
+      ratchet: Ratchet.Phoenix.Engine
     ```
 
   4. Now, in order to avoid tons of manual configuration, I like to configure brunch to append all texasjs files to a single file and load that up seperately from the rest of our applications javascript.  You will need a version of brunch later than 2.3 I think?  I don't know, I just make sure it's latest, which as of me typing this I'm using version `2.8.2`.  Phoenix `1.2.1` appears to install brunch `2.8.0` so you should be fine if you're using a newer version of phoenix.
@@ -62,7 +62,7 @@ You'll need two libraries, texas from the hex repos and texasjs from npm's repos
 
   5.  great! now when we compile (given we have a texas macro declared somewhere) all our boilerplate stuff will be written to `web/static/js/texas/` which brunch will compile everything in the texas directory into a texas.js file that by default will be located in `priv/static/js/` - so lets make sure we tell our html to serve that to our clients
 
-  in `web/templates/layout/app.html.eex` lets make sure our js declarations look something like this:
+  in `web/templates/layout/app.html.eex` lets make sure our newly compiled priv/static/js files are being served to the client.  At the bottom it should look something like this - taking note that order does matter here:
 
   ```
     <script src="<%= static_path(@conn, "/js/vendor.js") %>"></script>
