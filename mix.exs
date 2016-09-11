@@ -29,7 +29,9 @@ defmodule Texas.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:phoenix_ratchet, "~>0.3.1"}]
+    [{:phoenix_ratchet, "~>0.3.1"},
+     {:ex_doc, ">= 0.0.0", only: :dev}
+    ]
   end
 
   defp description do
