@@ -64,7 +64,7 @@ index d2fe679..09ec8b2 100644
    modules: {
      autoRequire: {
 -      "js/app.js": ["web/static/js/app"]
-+      "js/app.js": ["web/static/js/app", "web/static/js/texas"]
++      "js/app.js": ["web/static/js/app", "web/static/js/texas/texas"]
      }
    },
 ```
