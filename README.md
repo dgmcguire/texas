@@ -37,32 +37,9 @@ You'll need two libraries, texas from the hex repos and texasjs from npm's repos
 
   puts a declaration for a joinTo file for texas - if you haven't touched brunchjs then it should look something like this:
 
-  ```
-    exports.config = {
-      files: {
-        javascripts: {
-          joinTo: "js/app.js"
-        },
-      ...
-      },
-    ...
-    }
-  ```
+![](/images/brunch-diff.png)
 
   change it to look something like this, noting that the import bits are the declarations to give texas its own joinTo file and make sure node_modules are being pulled in  - I'm not sure why I have to make that vendor declaration because I believe it's supposed to happen like that by default, but this way works so /shrug
-
-  ```
-    exports.config = {
-      files: {
-        javascripts: {
-          joinTo: {
-            "js/vendor.js": /^node_modules/,
-            "js/app.js": /^web\/static\/js/,
-            "js/texas.js": /^web\/static\/js\/texas/
-          }
-        },
-      ...
-  ```
 
   5.  great! now when we compile (given we have a texas macro declared somewhere) all our boilerplate stuff will be written to `web/static/js/texas/` which brunch will compile everything in the texas directory into a texas.js file that by default will be located in `priv/static/js/` - so lets make sure we tell our html to serve that to our clients
 
