@@ -29,6 +29,10 @@ You'll need two libraries, texas from the hex repos and texasjs from npm's repos
 
   4. Now, in order to avoid tons of manual configuration, I like to configure brunch to append all texasjs files to a single file and load that up seperately from the rest of our applications javascript.  You will need a version of brunch later than 2.3 I think?  I don't know, I just make sure it's latest, which as of me typing this I'm using version `2.8.2`.  Phoenix `1.2.1` appears to install brunch `2.8.0` so you should be fine if you're using a newer version of phoenix.
 
+```
+  tip: I've included a brunch-config-example.js in the repo to compare
+```
+
   inside `brunch-config.js`:
 
   puts a declaration for a joinTo file for texas - if you haven't touched brunchjs then it should look something like this:
