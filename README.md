@@ -37,7 +37,7 @@ You'll need two libraries, texas from the hex repos and texasjs from npm's repos
 
   puts a declaration for a joinTo file for texas - if you haven't touched brunchjs then it should look something like this:
 
-![](/images/brunch-diff.png =250x)
+<img src="/images/brunch-diff.png" width="250">
 
   change it to look something like this, noting that the import bits are the declarations to give texas its own joinTo file and make sure node_modules are being pulled in  - I'm not sure why I have to make that vendor declaration because I believe it's supposed to happen like that by default, but this way works so /shrug
 
