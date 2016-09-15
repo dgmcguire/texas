@@ -6,6 +6,8 @@ Texas is a library that writes javascript so you don't have too.  Tightly couple
 
 [Texas getting started](https://youtu.be/Ec8eZZrXMxQ)
 
+also [here's the code (hopefully it works) from the demo in the video](https://github.com/dgmcguire/texas_demo)
+
 ## Installation
 
 You'll need two libraries, texas from the hex repos and texasjs from npm's repos.  Texas will handle the macro that writes our JS for us and texasjs will only pull in the dependencies for us. The config setup is a bit heavy - hopefully I can fix that in the near future.
