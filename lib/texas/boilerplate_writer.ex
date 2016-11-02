@@ -77,6 +77,7 @@ defmodule Texas.BoilerplateWriter do
       $("[data-prop='#{prop}']").submit(function( event ) {
         event.preventDefault();
         #{prop}.push("prop:#{prop}", {query: $(event.target).serialize()});
+        $(this)[0].reset();
       });
       """
   end
@@ -104,6 +105,7 @@ defmodule Texas.BoilerplateWriter do
       $("[data-prop='#{prop}']").submit(function( event ) {
         event.preventDefault();
         #{prop}.push("prop:#{prop}", {query: $(event.target).serialize()});
+        $(this)[0].reset();
       });
     """
     end
