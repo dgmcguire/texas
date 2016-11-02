@@ -1,10 +1,12 @@
 # Texas
 
-Texas is a library that writes javascritp so you don't have too.  Tightly coupled with [phoenix_ratchet](https://github.com/iamvery/phoenix_ratchet) to provide javascript boilerplate that will hijack specified forms to update in realtime over websockets rather than use http for request/response, full page reloads.
+Texas is a library that writes javascript so you don't have too.  Tightly coupled with [phoenix_ratchet](https://github.com/iamvery/phoenix_ratchet) to provide javascript boilerplate that will hijack specified forms to update in realtime over websockets rather than use http for request/response, full page reloads.
 
 ## Video getting started/walkthru thingy?
 
 [Texas getting started](https://youtu.be/Ec8eZZrXMxQ)
+
+also [here's the code (hopefully it works) from the demo in the video](https://github.com/dgmcguire/texas_demo)
 
 ## Installation
 
@@ -73,7 +75,7 @@ index d2fe679..09ec8b2 100644
    },
 ```
 
-  5.  great! now when we compile (given we have a texas macro declared somewhere) all our boilerplate stuff will be written to `web/static/js/texas/` which brunch will compile everything in the texas directory into a texas.js file that by default will be located in `priv/static/js/` - so lets make sure we tell our html to serve that to our clients
+  5.  great! now when we compile (given we have a texas macro declared somewhere such as [here](https://github.com/dgmcguire/texas_demo/blob/master/web/views/page_view.ex#L4-L6) in the demo app you see in the video) all our boilerplate stuff will be written to `web/static/js/texas/` which brunch will compile everything in the texas directory into a texas.js file that by default will be located in `priv/static/js/` - so lets make sure we tell our html to serve that to our clients
 
   in `web/templates/layout/app.html.eex` lets make sure our newly compiled priv/static/js files are being served to the client.  At the bottom it should look something like this - taking note that order does matter here as dependencies of texas are located in vendor:
 
