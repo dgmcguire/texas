@@ -7,9 +7,9 @@ defmodule Texas.Mixfile do
      elixir: "~> 1.2",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     description: description,
-     package: package,
-     deps: deps]
+     description: description(),
+     package: package(),
+     deps: deps()]
   end
 
   # Configuration for the OTP application
@@ -29,8 +29,10 @@ defmodule Texas.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:phoenix_ratchet, "~>0.3.1"},
-     {:ex_doc, ">= 0.0.0", only: :dev}
+    [
+     {:ex_doc, ">= 0.0.0", only: :dev},
+     {:floki, "~>0.17.0"},
+     {:phoenix_html, "~>2.10"},
     ]
   end
 
