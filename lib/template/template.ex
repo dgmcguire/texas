@@ -1,20 +1,22 @@
 defmodule Texas.Template do
   @html5_attr "data-texas"
-  @tlk "@texas" # top level key
+  @tlk "texas" # top level key
 
   def transform(html) do
-    tree_walk(html)
+    tree_walk(html, nil)
   end
 
-  defp tree_walk([]), do: []
-  defp tree_walk(string) when is_binary(string), do: []
-  defp tree_walk([child|rest]) do
-    [tree_walk(child)|tree_walk(rest)] |> List.flatten
+  defp tree_walk([], _texas_id), do: []
+  defp tree_walk(string, texas_id) when is_binary(string) do
+    if texas_id, do: [], else: string
   end
-  defp tree_walk({tag,attrs,child} = element) when is_tuple(element) do
+  defp tree_walk([child|rest], _texas_id) do
+    [tree_walk(child, nil)|tree_walk(rest, nil)] |> List.flatten
+  end
+  defp tree_walk({tag,attrs,child} = element, _texas_id) when is_tuple(element) do
     case get_prop(element) do
-      :none -> {tag,attrs,tree_walk(child)}
-      texas_id -> transform_element({tag,attrs,tree_walk(child)}, texas_id)
+      :none -> {tag,attrs,tree_walk(child, nil)}
+      texas_id -> transform_element({tag,attrs,tree_walk(child, texas_id)}, texas_id)
     end
   end
   defp get_prop({_,attrs,_}) do
@@ -22,10 +24,12 @@ defmodule Texas.Template do
     if texas_id, do: texas_id, else: :none
   end
 
-  defp transform_element({tag,static_attrs,old_child}, texas_id) do
+  defp transform_element({tag,static_attrs,[old_child]}, texas_id) do
+    IO.inspect texas_id, label: "transform elem"
     attrs = [List.wrap(static_to_eex(static_attrs, texas_id)) | List.wrap(dyn_eex_expr(static_attrs, texas_id))] |> List.flatten
     child = dyn_content_expr(texas_id)
-    {tag, attrs, [child|old_child]}
+    old_child = if is_binary(old_child), do: [], else: old_child
+    {tag, attrs, [child|List.wrap(old_child)]}
   end
 
   defp static_to_eex(static_attrs, texas_id) do
