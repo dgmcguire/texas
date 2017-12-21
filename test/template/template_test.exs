@@ -2,6 +2,7 @@ defmodule TemplateTest do
   use ExUnit.Case
   alias HelperFuncs, as: H
   alias Texas.Template
+  alias Texas.TemplateEngine, as: Engine
 
   @simple_elem "./test/fixtures/template/simple_element.html.tex"
   @simple_data [texas: %{ test: {"div", [], ["test content"]} }]
@@ -12,7 +13,7 @@ defmodule TemplateTest do
   ) |> H.whitespace_cleanup
 
   test "transforms simple elem" do
-    output = H.transform(@simple_elem)
+    output = Engine.merged_html(@simple_elem)
              |> Template.render(@simple_data)
 
     assert  output == @simple_elem_expected
@@ -27,7 +28,7 @@ defmodule TemplateTest do
   ) |> H.whitespace_cleanup
 
   test "transforms elem with attrs" do
-    output = H.transform(@elem_w_attrs)
+    output = Engine.merged_html(@elem_w_attrs)
              |> Template.render(@elem_w_attrs_data)
 
     assert output == @elem_w_attrs_expected
@@ -35,7 +36,13 @@ defmodule TemplateTest do
 
   @list_elem "./test/fixtures/template/list_elem.html.tex"
   @list_data texas: %{
-    list: {"div", [], [{"div", [], ["first content"]}, {"div", [], ["second content"]}, {"div", [], ["third content"]}]}
+    list: {"div", [],
+      [
+        {"div", [], ["first content"]},
+        {"div", [], ["second content"]},
+        {"div", [], ["third content"]}
+      ]
+    }
   }
   @list_elem_expected ~s(
     <div data-texas="list" >
@@ -52,7 +59,7 @@ defmodule TemplateTest do
   ) |> H.whitespace_cleanup
 
   test "transforms list elem" do
-    output = H.transform(@list_elem)
+    output = Engine.merged_html(@list_elem)
              |> Template.render(@list_data)
 
     assert output == @list_elem_expected
@@ -68,9 +75,11 @@ defmodule TemplateTest do
     <div data-texas="test" class="some dynamic class adding" id="does this" href="www.example.com">
       content
       <div>
+        this should still be here
         <div data-texas="nest" class="a b" id="a b c" >
           more
         </div>
+        put
       </div>
       <div data-texas="nestb" class="a b" id="a b c" >
         more
@@ -79,9 +88,10 @@ defmodule TemplateTest do
   ) |> H.whitespace_cleanup
 
   test "dynamically add attributes" do
-    output = H.transform(@dyn_attrs)
-             |> IO.inspect(label: "testing")
+    output = Engine.merged_html(@dyn_attrs)
+             #|> IO.inspect(label: "merged_html")
              |> Template.render(@dyn_attrs_data)
+             |> H.whitespace_cleanup
 
     assert output == @dyn_attrs_expected
   end

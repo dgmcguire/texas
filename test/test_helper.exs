@@ -15,8 +15,8 @@ defmodule HelperFuncs do
   def whitespace_cleanup(html_string) do
     html_string
       |> String.split("\n")
-      |> Enum.map(&(String.strip(&1)))
+      |> Enum.map(&(String.trim(&1)))
       |> Enum.join
-      |> String.strip
+      |> String.trim
   end
 end

@@ -8,15 +8,17 @@ defmodule Texas.TemplateEngine do
   import Phoenix.HTML.Engine
 
   def compile(template_path, _template_name) do
+      merged_html(template_path)
+      |> EEx.compile_string(engine: Phoenix.HTML.Engine, file: template_path, line: 1)
+  end
+
+  def merged_html(template_path) do
     template_path
       |> File.read!
       |> Floki.parse
-      #|> IO.inspect(label: "parse")
+      #|> IO.inspect(label: "parsed")
       |> Texas.Template.transform
-      #|> IO.inspect(label: "transfomr")
+      #|> IO.inspect(label: "transformed")
       |> Floki.raw_html
-      #|> IO.inspect(label: "raw_html")
-      |> EEx.compile_string(engine: Phoenix.HTML.Engine, file: template_path, line: 1)
-      #|> IO.inspect(label: "compiled")
   end
 end
