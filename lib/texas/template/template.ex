@@ -1,6 +1,6 @@
 defmodule Texas.Template do
   @html5_attr "data-texas"
-  @tlk "texas" # top level key
+  @tlk "assigns[:texas]" # top level keyccess
 
   def transform(html) do
     tree_walk(html, nil)
@@ -10,9 +10,15 @@ defmodule Texas.Template do
   defp tree_walk(string, texas_id) when is_binary(string) do
     case texas_id do
       :none -> string
-      _ -> []
+       _ -> [] # remove_content_preserve_whitespace(string)
     end
   end
+  #defp remove_content_preserve_whitespace(string) do
+    #IO.inspect string
+    #matches = Regex.named_captures(~r/(?<lead>\s*).*(?<trail>\s*)/, string)
+    #IO.inspect matches["lead"], label: "lead"
+    #matches["lead"]
+  #end
   defp tree_walk([child|rest], texas_id) do
     [tree_walk(child, texas_id)|tree_walk(rest, texas_id)] |> List.flatten
   end
@@ -31,7 +37,7 @@ defmodule Texas.Template do
     attrs = [List.wrap(static_to_eex(static_attrs, texas_id)) | List.wrap(dyn_eex_expr(static_attrs, texas_id))] |> List.flatten
     child = dyn_content_expr(texas_id)
     old_child = if is_binary(old_child), do: [], else: old_child
-    {tag, attrs, [child|List.wrap(old_child)]}
+    {tag, attrs, [List.wrap(child) | List.wrap(old_child)]|>List.flatten}
   end
 
   defp static_to_eex(static_attrs, texas_id) do
@@ -55,35 +61,36 @@ defmodule Texas.Template do
   end
 
   defp dyn_eex_expr(static_attrs, texas_id) do
-    dyn_attrs = "elem(#{@tlk}.#{texas_id}, 1)"
-    ~s/<%= #{__MODULE__}.outer_dyn_attrs(#{inspect(static_attrs)}, #{dyn_attrs}) %>/
+    ~s/<%= raw(#{__MODULE__}.outer_dyn_attrs(#{inspect(static_attrs)}, elem(#{@tlk}.#{texas_id}, 1))) %>/
   end
 
   defp dyn_content_expr(texas_id) do
-    ~s/<%= for content <- elem(#{@tlk}.#{texas_id}, 2), do: #{__MODULE__}.render_node(content) %>/
+    ~s/<%= for content <- elem(#{@tlk}.#{texas_id}, 2), do: raw(#{__MODULE__}.render_node(content)) %>/
   end
 
-  def render_node(content) when is_binary(content), do: content
-  def render_node(content) when is_tuple(content), do: content |> Floki.raw_html
+  def render_node(content) when is_binary(content), do: "\n  #{content}\n"
+  def render_node({tag,attr,children}) do
+    {tag,attr,children} |> Floki.raw_html
+  end
   def render_node(_content), do: nil
 
   def outer_dyn_attrs(_static, []), do: nil
   def outer_dyn_attrs(static, dyn) do
     static
     |> remove_texas
-    |> remove_dyn(dyn)
+    |> remove_static(dyn)
     |> return_class_vals_pairs
   end
-  defp remove_texas(static), do: List.keydelete(static, "data-texas", 0)
-  defp remove_dyn(static, dyn) do
+  defp remove_texas(static) do
+    List.keydelete(static, "data-texas", 0)
+  end
+  defp remove_static(static, dyn) do
     Enum.reject(dyn, fn {prop,_} -> List.keyfind(static, prop, 0) end)
   end
   defp return_class_vals_pairs(dyn_attrs) do
-    Enum.map(dyn_attrs, fn {prop,vals} -> ~s/#{prop}="#{vals}"/ end)
-     |> Enum.join(" ")
-  end
-
-  def render(eex_html, data) do
-    EEx.eval_string(eex_html, data)
+    attr_val_pairs = Enum.map(dyn_attrs, fn {prop,vals} ->
+     ~s/#{prop}="#{vals}"/
+    end) |> Enum.join(" ")
+    attr_val_pairs
   end
 end

@@ -1,15 +1,21 @@
-ExUnit.start()
 
 defmodule HelperFuncs do
-  def transform(path) do
-    path
+  import Phoenix.HTML
+  ExUnit.start()
+
+  def merged_eex(template_path) do
+    html = template_path
       |> File.read!
       |> Floki.parse
-      |> IO.inspect( label: "parsed" )
+      #|> IO.inspect(label: "parsed")
       |> Texas.Template.transform
-      |> IO.inspect( label: "transformed")
+      #|> IO.inspect(label: "transformed")
       |> Floki.raw_html
-      |> IO.inspect(label: "raw html")
+
+    escaped = ~E"""
+    <%=raw(html)%>
+    """
+    Phoenix.HTML.safe_to_string(escaped)
   end
 
   def whitespace_cleanup(html_string) do

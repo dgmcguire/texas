@@ -1,41 +1,53 @@
 defmodule TemplateTest do
   use ExUnit.Case
-  alias HelperFuncs, as: H
-  alias Texas.Template
-  alias Texas.TemplateEngine, as: Engine
+  alias HelperFuncs, as: Helper
+  import Phoenix.HTML
 
   @simple_elem "./test/fixtures/template/simple_element.html.tex"
   @simple_data [texas: %{ test: {"div", [], ["test content"]} }]
-  @simple_elem_expected ~s(
-    <div data-texas="test" >
-      test content
-    </div>
-  ) |> H.whitespace_cleanup
-
+  @simple_elem_expected ~E"""
+  <div data-texas="test" >
+    test content
+  </div>
+  """
   test "transforms simple elem" do
-    output = Engine.merged_html(@simple_elem)
-             |> Template.render(@simple_data)
+    safe = Phoenix.HTML.safe_to_string(@simple_elem_expected)
+    html_string = Helper.merged_eex(@simple_elem)
 
-    assert  output == @simple_elem_expected
+    defmodule Test do
+      require EEx
+      EEx.function_from_string(:def, :eval_html, html_string, [:assigns], [engine: Phoenix.HTML.Engine])
+    end
+
+    output = Test.eval_html(@simple_data)
+      |> Phoenix.HTML.safe_to_string
+    assert  output == safe
   end
 
   @elem_w_attrs "./test/fixtures/template/elem_with_attrs.html.tex"
-  @elem_w_attrs_data texas: %{test: {"div", [], ["test content"]}}
-  @elem_w_attrs_expected ~s(
-    <div data-texas="test" class="some attrs" id="more attrs" >
-      test content
-    </div>
-  ) |> H.whitespace_cleanup
+  @elem_w_attrs_data [texas: %{test: {"div", [], ["test content"]}}]
+  @elem_w_attrs_expected ~E"""
+  <div data-texas="test" class="some attrs" id="more attrs" >
+    test content
+  </div>
+  """
 
   test "transforms elem with attrs" do
-    output = Engine.merged_html(@elem_w_attrs)
-             |> Template.render(@elem_w_attrs_data)
+    safe = Phoenix.HTML.safe_to_string(@elem_w_attrs_expected)
+    html_string = Helper.merged_eex(@elem_w_attrs)
 
-    assert output == @elem_w_attrs_expected
+    defmodule Test do
+      require EEx
+      EEx.function_from_string(:def, :eval_html, html_string, [:assigns], [engine: Phoenix.HTML.Engine])
+    end
+
+    output = Test.eval_html(@simple_data)
+      |> Phoenix.HTML.safe_to_string
+    assert  output == safe
   end
 
   @list_elem "./test/fixtures/template/list_elem.html.tex"
-  @list_data texas: %{
+  @list_data [texas: %{
     list: {"div", [],
       [
         {"div", [], ["first content"]},
@@ -43,26 +55,23 @@ defmodule TemplateTest do
         {"div", [], ["third content"]}
       ]
     }
-  }
-  @list_elem_expected ~s(
-    <div data-texas="list" >
-      <div>
-        first content
-      </div>
-      <div>
-        second content
-      </div>
-      <div>
-        third content
-      </div>
-    </div>
-  ) |> H.whitespace_cleanup
+  }]
+  @list_elem_expected  ~E"""
+  <div data-texas="list" ><div>first content</div><div>second content</div><div>third content</div></div>
+  """
 
   test "transforms list elem" do
-    output = Engine.merged_html(@list_elem)
-             |> Template.render(@list_data)
+    expected_output = Phoenix.HTML.safe_to_string(@list_elem_expected)
+    html_string = Helper.merged_eex(@list_elem)
 
-    assert output == @list_elem_expected
+    defmodule Test do
+      require EEx
+      EEx.function_from_string(:def, :eval_html, html_string, [:assigns], [engine: Phoenix.HTML.Engine])
+    end
+
+    file_output = Test.eval_html(@list_data)
+      |> Phoenix.HTML.safe_to_string
+    assert  file_output == expected_output
   end
 
   @dyn_attrs "./test/fixtures/template/dyn_attrs.html.tex"
@@ -71,28 +80,36 @@ defmodule TemplateTest do
     nest: {"div", [{"class", "b"}, {"id", "c"}], ["more"]},
     nestb: {"div", [{"class", "b"}, {"id", "c"}], ["more"]}
   }
-  @dyn_attrs_expected ~s(
-    <div data-texas="test" class="some dynamic class adding" id="does this" href="www.example.com">
-      content
-      <div>
-        this should still be here
-        <div data-texas="nest" class="a b" id="a b c" >
-          more
-        </div>
-        put
-      </div>
-      <div data-texas="nestb" class="a b" id="a b c" >
+  @dyn_attrs_expected ~E"""
+  <div data-texas="test" class="some dynamic class adding" id="does this" href="www.example.com">
+    content
+    <div>
+      this should still be here
+      <div data-texas="nest" class="a b" id="a b c" >
         more
       </div>
+      put
     </div>
-  ) |> H.whitespace_cleanup
+    <div data-texas="nestb" class="a b" id="a b c" >
+      more
+    </div>
+  </div>
+  """
 
   test "dynamically add attributes" do
-    output = Engine.merged_html(@dyn_attrs)
-             #|> IO.inspect(label: "merged_html")
-             |> Template.render(@dyn_attrs_data)
-             |> H.whitespace_cleanup
+    expected_output =
+      Phoenix.HTML.safe_to_string(@dyn_attrs_expected)
+      |> Helper.whitespace_cleanup
+    html_string = Helper.merged_eex(@dyn_attrs)
+    defmodule Test do
+      require EEx
+      EEx.function_from_string(:def, :eval_html, html_string, [:assigns], [engine: Phoenix.HTML.Engine])
+    end
+    file_output =
+      Test.eval_html(@dyn_attrs_data)
+      |> Phoenix.HTML.safe_to_string
+      |> Helper.whitespace_cleanup
 
-    assert output == @dyn_attrs_expected
+    assert  file_output == expected_output
   end
 end
