@@ -37,6 +37,7 @@ defmodule Texas.Mixfile do
       {:floki, "~>0.17.0"},
       {:phoenix, "~>1.3"},
       {:phoenix_html, "~>2.10"},
+      {:uuid, "~>1.1"},
     ]
   end
 

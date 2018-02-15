@@ -10,4 +10,5 @@
   "phoenix_ratchet": {:hex, :phoenix_ratchet, "0.3.1", "5fa03a6496fddfc77d968e9fca097590fd1cae46a616d62cf35c69d9aa0a6b11", [:mix], [{:phoenix, "~> 1.1", [hex: :phoenix, optional: false]}, {:phoenix_html, "~> 2.5", [hex: :phoenix_html, optional: false]}, {:ratchet, ">= 0.3.0", [hex: :ratchet, optional: false]}]},
   "plug": {:hex, :plug, "1.4.3", "236d77ce7bf3e3a2668dc0d32a9b6f1f9b1f05361019946aae49874904be4aed", [:mix], [{:cowboy, "~> 1.0.1 or ~> 1.1", [hex: :cowboy, repo: "hexpm", optional: true]}, {:mime, "~> 1.0", [hex: :mime, repo: "hexpm", optional: false]}], "hexpm"},
   "poison": {:hex, :poison, "3.1.0", "d9eb636610e096f86f25d9a46f35a9facac35609a7591b3be3326e99a0484665", [], [], "hexpm"},
-  "ratchet": {:hex, :ratchet, "0.3.3", "acf60170f6608ea5dc7e42775b2c90fbb4a3538fec2a1c488d716208a58857ab", [:mix], [{:floki, "~> 0.8", [hex: :floki, optional: false]}, {:phoenix_html, "~> 2.5", [hex: :phoenix_html, optional: false]}]}}
+  "ratchet": {:hex, :ratchet, "0.3.3", "acf60170f6608ea5dc7e42775b2c90fbb4a3538fec2a1c488d716208a58857ab", [:mix], [{:floki, "~> 0.8", [hex: :floki, optional: false]}, {:phoenix_html, "~> 2.5", [hex: :phoenix_html, optional: false]}]},
+  "uuid": {:hex, :uuid, "1.1.8", "e22fc04499de0de3ed1116b770c7737779f226ceefa0badb3592e64d5cfb4eb9", [], [], "hexpm"}}

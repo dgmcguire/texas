@@ -1,50 +1,56 @@
 defmodule Texas.DiffTest do
   use ExUnit.Case
 
-  describe "can get patchset from diff" do
-    test "when one child changes" do
-      patchset = Texas.Diff.diff(old(), new(:single))
-      assert patchset ==
-        [ chat: { "div", [{"method", "POST"}, {"action", "/messages"}], [{"div", [], ["another"]}] } ]
-    end
+  test "add div to empty child" do
+    data_attr = :chat
+    cached = {"div", [{"method", "POST"}, {"action", "/messages"}], []}
+    new = {"div", [{"method", "POST"}, {"action", "/messages"}], [{"div", [], ["another"]}]}
 
-    test "when multiple children change" do
-      patchset = Texas.Diff.diff(old(), new(:multi))
-      assert patchset ==
-        [ { :chat, { "div", [{"method", "POST"}, {"action", "/messages"}], [{"div", [], ["another"]}] } },
-          { :message_input, {"input", [type: "text", name: "message", placeholder: "blahblahblah"], []} }
-        ]
-    end
+    patch = Texas.Diff.diff(data_attr, cached, new)
+    assert patch ==
+      %{chat: %{children: [
+          %{add: %{data: [["div", [], ["another"]]]} }
+        ]}
+      }
   end
 
-  defp old do
-    [texas:
-     %{chat: {"div", [{"method", "POST"}, {"action", "/messages"}], []},
-       csrf: {"input", [type: "hidden", name: "_csrf_token",
-             value: "KzIIJgEMBUsTOS5wMGEhAUFnWB5cAAAAEGMK4JqsKMm3W2Uc3Rmw1w=="], []},
-       message_form: {"form", [action: "/add_message", method: "post"], []},
-       message_input: {"input",
-                        [type: "text", name: "message", placeholder: "Enter a message"], []}}]
+  test "add div to non-empty child" do
+    data_attr = :chat
+    cached = {"div", [{"method", "POST"}, {"action", "/messages"}], [{"div", [], ["another"]}]}
+    new = {"div", [{"method", "POST"}, {"action", "/messages"}], [{"div", [], ["another"]}, {"div", [], ["yet another"]}]}
+
+    patch = Texas.Diff.diff(data_attr, cached, new)
+    assert patch ==
+      %{chat: %{children: [
+        %{eq: 1},
+        %{add: %{data: [["div", [], ["yet another"]]]}}
+      ]}}
   end
 
-  defp new(:single) do
-    [texas: %{chat: {"div", [{"method", "POST"}, {"action", "/messages"}],
-        [{"div", [], ["another"]}]},
-       csrf: {"input",
-        [type: "hidden", name: "_csrf_token",
-         value: "KzIIJgEMBUsTOS5wMGEhAUFnWB5cAAAAEGMK4JqsKMm3W2Uc3Rmw1w=="], []},
-       message_form: {"form", [action: "/add_message", method: "post"], []},
-       message_input: {"input",
-        [type: "text", name: "message", placeholder: "Enter a message"], []}}]
+  test "adds attr to root" do
+    data_attr = :chat
+    cached = {"div", [], []}
+    new = {"div", [{"class", "add"}], []}
+
+    patch = Texas.Diff.diff(data_attr, cached, new)
+    assert patch == %{chat: %{attrs: [[:add, %{"class" => "add"}]]}}
   end
-  defp new(:multi) do
-    [texas: %{chat: {"div", [{"method", "POST"}, {"action", "/messages"}],
-        [{"div", [], ["another"]}]},
-       csrf: {"input",
-        [type: "hidden", name: "_csrf_token",
-         value: "KzIIJgEMBUsTOS5wMGEhAUFnWB5cAAAAEGMK4JqsKMm3W2Uc3Rmw1w=="], []},
-       message_form: {"form", [action: "/add_message", method: "post"], []},
-       message_input: {"input",
-        [type: "text", name: "message", placeholder: "blahblahblah"], []}}]
+
+  test "deletes attr from root" do
+    data_attr = :chat
+    cached = {"div", [{"class", "some"}], []}
+    new = {"div", [], []}
+
+    patch = Texas.Diff.diff(data_attr, cached, new)
+    assert patch == %{chat: %{attrs: [[:del, %{"class" => "some"}]]}}
+  end
+
+  test "updates attrs to root" do
+    data_attr = :chat
+    cached = {"div", [{"class", "on"}], []}
+    new = {"div", [{"class", "off"}], []}
+
+    patch = Texas.Diff.diff(data_attr, cached, new)
+    assert patch == %{chat: %{attrs: [[:del, %{"class" => "on"}], [:add, %{"class" => "off"}]]}}
   end
 end

@@ -1,6 +1,6 @@
 defmodule Texas.Template do
   @html5_attr "data-texas"
-  @tlk "assigns[:texas]" # top level keyccess
+  @tlk "assigns[:texas]" # top level key
 
   def transform(html) do
     tree_walk(html, nil)
@@ -10,15 +10,9 @@ defmodule Texas.Template do
   defp tree_walk(string, texas_id) when is_binary(string) do
     case texas_id do
       :none -> string
-       _ -> [] # remove_content_preserve_whitespace(string)
+       _ -> []
     end
   end
-  #defp remove_content_preserve_whitespace(string) do
-    #IO.inspect string
-    #matches = Regex.named_captures(~r/(?<lead>\s*).*(?<trail>\s*)/, string)
-    #IO.inspect matches["lead"], label: "lead"
-    #matches["lead"]
-  #end
   defp tree_walk([child|rest], texas_id) do
     [tree_walk(child, texas_id)|tree_walk(rest, texas_id)] |> List.flatten
   end
@@ -79,7 +73,7 @@ defmodule Texas.Template do
     static
     |> remove_texas
     |> remove_static(dyn)
-    |> return_class_vals_pairs
+    |> get_attr_vals_pairs
   end
   defp remove_texas(static) do
     List.keydelete(static, "data-texas", 0)
@@ -87,7 +81,7 @@ defmodule Texas.Template do
   defp remove_static(static, dyn) do
     Enum.reject(dyn, fn {prop,_} -> List.keyfind(static, prop, 0) end)
   end
-  defp return_class_vals_pairs(dyn_attrs) do
+  defp get_attr_vals_pairs(dyn_attrs) do
     attr_val_pairs = Enum.map(dyn_attrs, fn {prop,vals} ->
      ~s/#{prop}="#{vals}"/
     end) |> Enum.join(" ")
