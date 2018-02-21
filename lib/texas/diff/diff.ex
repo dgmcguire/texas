@@ -2,8 +2,6 @@ defmodule Texas.Diff do
   @moduledoc "Thin wrapper around myers diff to get a view patch"
 
   def diff(data_attr, cached, updated) do
-    IO.inspect cached, label: "cached"
-    IO.inspect updated, label: "updated"
     cached_attrs = elem(cached, 1)
     cached_children = elem(cached, 2)
     new_attrs = elem(updated, 1)
@@ -19,6 +17,7 @@ defmodule Texas.Diff do
         {[], []} -> []
         _ -> Map.new([{data_attr, diff_map}])
       end
+    IO.inspect diff, label: "diff"
     {:ok, diff}
   end
 
@@ -45,7 +44,6 @@ defmodule Texas.Diff do
 
         :ins ->
           child = to_list(elem(x, 1))
-          IO.inspect child, label: "child"
           %{add: %{data: child}}
 
         :del ->

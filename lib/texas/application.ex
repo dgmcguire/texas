@@ -6,7 +6,8 @@ defmodule Texas.Application do
 
     children = [
       supervisor(Texas.Client.Supervisor, []),
-      supervisor(Registry, [:unique, ClientRegistry])
+      supervisor(Registry, [:unique, ClientRegistry], id: :client),
+      supervisor(Registry, [:unique, CacheRegistry], id: :view_cache)
     ]
 
     opts = [strategy: :one_for_one, name: Texas.Supervisor]

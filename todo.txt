@@ -1,0 +1,18 @@
+browser sends message to channel
+channel to controller
+controller does operations
+controller tells texas props processes to update themselves
+
+# genserver
+texas props proc's tell clients to grab their updated view
+
+# pubsub
+client_server grabs updates and creates diff patch with their own cache
+client_server sends diff patch to it's own websocket
+  create subscription with uuid
+
+idea
+  servers all know their roles for each texas prop
+    one of the roles is their own uuid?
+
+how to give client servers their roles
