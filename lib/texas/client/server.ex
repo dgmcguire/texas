@@ -6,7 +6,7 @@ defmodule Texas.Client.Server do
     IO.inspect client_uid, label: "client-Uid"
     case Registry.lookup(ClientRegistry, client_uid) do
       [] -> GenServer.start_link(__MODULE__, [state: init_state, uid: client_uid])
-      _ -> :already_started
+      _ -> :ignore
     end
   end
 
@@ -17,12 +17,8 @@ defmodule Texas.Client.Server do
     IO.inspect lookup, label: "lookup"
     IO.inspect t, label: "t"
 
-    stest = sub_to_props(opts[:state])
-    IO.inspect "HERE IN BOLD"
     ftest = state_view_builder_procs(opts)
-    IO.inspect "HERE IN BOLD"
-
-    IO.inspect {stest, ftest}, label: "testing"
+    stest = sub_to_props(opts[:state])
     {:ok, opts[:state]}
   end
 

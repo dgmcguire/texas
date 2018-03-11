@@ -6,6 +6,7 @@ defmodule Texas.Application do
 
     children = [
       supervisor(Texas.Client.Supervisor, []),
+      Texas.CacheSupervisor,
       supervisor(Registry, [:unique, ClientRegistry], id: :client),
       supervisor(Registry, [:unique, CacheRegistry], id: :view_cache)
     ]

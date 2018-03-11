@@ -10,6 +10,6 @@ defmodule Texas.Client.Supervisor do
   end
 
   def start_client(init_state, client_uid) do
-    Supervisor.start_child(__MODULE__, [init_state, client_uid])
+    IO.inspect Supervisor.start_child(__MODULE__, [init_state, client_uid]), label: "client"
   end
 end

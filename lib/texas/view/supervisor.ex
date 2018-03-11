@@ -1,18 +1,17 @@
 defmodule Texas.CacheSupervisor do
-  use Supervisor
+  use DynamicSupervisor
 
-  def start_link do
-    Supervisor.start_link(__MODULE__, :ok, name: __MODULE__)
+  def start_link(arg) do
+    DynamicSupervisor.start_link(__MODULE__, arg, name: __MODULE__)
   end
 
-  def init(_) do
-    Supervisor.init([ Texas.Cache ], strategy: :simple_one_for_one)
+  def init(_arg) do
+    DynamicSupervisor.init(strategy: :one_for_one)
   end
 
   def start_cache({m,f,a}) do
-    IO.inspect m, label: "m"
-    IO.inspect f, label: "f"
-    IO.inspect a, label: "a am I here?"
-    IO.inspect Supervisor.start_child(__MODULE__, [m,f,a]), label: "working?"
+    mfa = %{module: m, fun: f, args: a}
+    DynamicSupervisor.start_child(__MODULE__, {Texas.Cache, mfa})
+    |> IO.inspect label: "start cache"
   end
 end
