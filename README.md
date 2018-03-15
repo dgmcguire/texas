@@ -1,3 +1,5 @@
+# This version is being deprecated and replaced by a back-end version soon.
+
 # Texas
 
 Texas is a library that writes javascript so you don't have too.  Tightly coupled with [phoenix_ratchet](https://github.com/iamvery/phoenix_ratchet) to provide javascript boilerplate that will hijack specified forms to update in realtime over websockets rather than use http for request/response, full page reloads.
