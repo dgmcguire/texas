@@ -4,7 +4,14 @@ defmodule Texas.Channel do
   def join("texas:main", %{"cookies" => cookies}, socket) do
     uuid = extract_uuid(cookies)
     socket = assign(socket, :texas_uuid, uuid)
+    [{pid, _}] = Registry.lookup(ClientRegistry, uuid)
+    GenServer.call(pid, {:socket_info, socket})
     {:ok, socket}
+  end
+
+  def handle_info({:diff, diff}, socket) do
+      push socket, "diff", diff
+      {:noreply, socket}
   end
 
   def handle_in("main", %{"form_data" => payload}, socket) do

@@ -12,6 +12,5 @@ defmodule Texas.CacheSupervisor do
   def start_cache({m,f,a}) do
     mfa = %{module: m, fun: f, args: a}
     DynamicSupervisor.start_child(__MODULE__, {Texas.Cache, mfa})
-    |> IO.inspect label: "start cache"
   end
 end
